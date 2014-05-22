@@ -1,0 +1,334 @@
+#+REVEAL_ROOT: http://cdn.jsdelivr.net/reveal.js/2.5.0/
+#+TITLE: Python Strings
+#+AUTHOR: Jason Furtney
+#+EMAIL: @jkfurtney
+#+OPTIONS: toc:nil num:nil
+
+* String literals
+
+#+BEGIN_SRC python :session :exports code :results pp
+joke      = "It's hard to explain puns to kleptomaniacs"
+punchline = 'because they always take things literally.'
+
+poem = """
+The Ogre does what ogres can,
+Deeds quite impossible for Man,
+But one prize is beyond his reach:
+The Ogre cannot master Speech.
+
+About a subjugated plain,
+Among its desperate and slain,
+The Ogre stalks with hands on hips,
+While drivel gushes from his lips.
+"""
+#+END_SRC
+
+#+REVEAL: split
+Raw strings
+
+#+BEGIN_SRC python :exports both :results output pp
+print "first line\nsecond line"
+
+print r"first line\nsecond line"
+#+END_SRC
+
+- Unicode and byte strings...
+
+* String operations
+
+#+BEGIN_SRC python :session :exports both :results pp
+"Spam " + "eggs"
+#+END_SRC
+
+#+REVEAL: split
+
+#+BEGIN_SRC python :session :exports both :results pp
+"Spam " * 10
+#+END_SRC
+
+#+REVEAL: split
+Converting objects to strings
+#+BEGIN_SRC python :session :exports both :results pp
+str(42) == "42"
+#+END_SRC
+and strings to objects
+#+BEGIN_SRC python :session :exports both :results pp
+int("42") == 42
+#+END_SRC
+
+#+REVEAL: split
+Iteration
+#+BEGIN_SRC python :exports both :results output pp
+for char in "pymntos":
+    print char
+#+END_SRC
+
+
+#+REVEAL: split
+Slicing
+#+BEGIN_SRC python :session  :exports both :results pp
+book_description =  "A cautionary tale of the decadent downside of the American dream."
+
+book_description[2:12]
+#+END_SRC
+
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports both :results output pp
+book_description =  "A cautionary tale of the decadent downside of the American dream."
+
+book_description[2:12] = "silly"
+#+END_SRC
+
+- Python strings are immutable for performance and safety.
+- The =str= methods and functions return a new =str= object.
+
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports both :results output pp
+book_description =  "A cautionary tale of the decadent downside of the American dream."
+print book_description.replace("cautionary", "silly")
+print book_description
+#+END_SRC
+
+The original string is unchanged.
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports both :results output pp
+incoherent = "Has Anyone Really Been Far Even as Decided to Use Even Go Want to do Look More Like?"
+print incoherent.upper()
+print incoherent.title()
+print incoherent.swapcase()
+print incoherent
+#+END_SRC
+
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports both :results pp
+", ".join(["one", "two", "three"])
+#+END_SRC
+
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports both :results pp
+"one,two,three".split(",")
+#+END_SRC
+
+#+REVEAL: split
+#+begin_SRC python :exports both :results output pp
+laws = """ First Law of Thermodynamics: You can't win.
+           Second Law of Thermodynamics: You can't break even.
+           Third Law of Thermodynamics: You can't stop playing."""
+
+for law in laws.splitlines():
+    print law.split(":")[1]
+#+END_SRC
+
+
+** Searching strings
+#+BEGIN_SRC python :session :exports both :results pp
+book_description =  "A cautionary tale of the decadent downside of the American dream."
+
+(
+  "of" in book_description,
+  book_description.startswith("A"),
+  book_description.endswith("dream."),
+  book_description.find("tale"),
+  book_description.find("Python")
+)
+#+END_SRC
+
+
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports both :results pp
+book_text = """
+In my younger and more vulnerable years my father gave me some advice
+that I've been turning over in my mind ever since. "Whenever you feel
+like criticizing any one", he told me, "just remember that all the
+people in this world haven't had the advantages that you've had."
+""" #  The first two sentences from The Great Gatsby.
+
+book_text.count("my")
+#+END_SRC
+
+
+** Regular expressions
+
+#+REVEAL: split
+#+BEGIN_SRC c++ :session :exports code
+fish->registerLibrary(NEWC(BaseLibrary(r,iArrayGet    ,"array.create" ,-1,true ,"array","int,..."  )));
+fish->registerLibrary(NEWC(BaseLibrary(r,iArrayLose   ,"array.delete" , 1,true ,"void" ,"array"    )));
+fish->registerLibrary(NEWC(BaseLibrary(r,iArrayDim    ,"array.dim"    , 1,true ,"int"  ,"array"    )));
+fish->registerLibrary(NEWC(BaseLibrary(r,iArraySize   ,"array.size"   , 2,true ,"int"  ,"array,int")));
+fish->registerLibrary(NEWC(BaseLibrary(r,iArrayConvert,"array.convert", 1,true ,"array","mat/tens")));
+fish->registerLibrary(NEWC(BaseLibrary(r,iArrayCopy   ,"array.copy"   , 1,false,"array","array")));
+fish->registerLibrary(NEWC(BaseLibrary(r,iArrayCommand,"array.command", 1,true ,"bool" ,"array")));
+#+END_SRC
+
+- =my_code.cpp=
+
+#+REVEAL: split
+   #+BEGIN_SRC python :exports both :results output pp
+import re
+pattern = re.compile(r'.*registerLibrary[^"]*"([^"]*)".*')
+
+results = []
+for line in open("my_code.cpp").readlines():
+    match = pattern.match(line)
+    if match:
+        results.append(match.groups()[0])
+
+print results
+   #+END_SRC
+
+* Structured Output
+
+String interpolation with =%=
+#+BEGIN_SRC python :session :exports both :results pp
+"%s and %s" % ("Spam", "eggs")
+#+END_SRC
+
+The string =format= method
+#+BEGIN_SRC python :session :exports both :results pp
+"{} and {}".format("Spam", "eggs")
+#+END_SRC
+
+The =format= method is new (Python 2.6+) and generally preferred. It
+is extensible.
+
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports both :results output pp
+template = "Hello {0}, welcome to {1}. {0} is {2}."
+template.format("David", "Minnesota", "Tall")
+#+END_SRC
+
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports both :results output pp
+template = "Hello {name}, welcome to {place}. {name} is {description}."
+template.format(name="David", place="Minnesota", description="Tall")
+#+END_SRC
+
+#+REVEAL: split
+#+BEGIN_SRC python :exports both :results output pp
+class Purchase:
+    pass
+
+transaction = Purchase()
+transaction.number = 3
+transaction.customer = "Bill"
+transaction.product = "Widget"
+
+receipt = "Thank you {0.customer} for your purchase of {0.number} {0.product}s."
+print receipt.format(transaction)
+#+END_SRC
+
+- Access object attributes
+- dictionary keys
+- list indexing
+
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports both :results output pp
+number = 123
+"decimal: {0}, hex: {0:X}, binary: {0:b}".format(number)
+#+END_SRC
+
+** In the old days...
+   :PROPERTIES:
+   :reveal_background: ./dumb_terminal.gif
+   :reveal_background_trans: slide
+   :END:
+
+** .
+   :PROPERTIES:
+   :reveal_background: ./paper_tape_reader.gif
+   :END:
+
+#+REVEAL: split
+#+BEGIN_SRC python :exports both :results output pp
+from math import pi, e
+for i in [-2,-1,0,1,2]:
+    scale = 10**i
+    print "{:9.4f} {:9.4f} {:9.4f}".format(10 * scale, pi * scale, e * scale)
+#+END_SRC
+
+#+REVEAL: split
+#+BEGIN_SRC python :exports both :results output pp
+words = "Has Anyone Really Been Far Even as Decided to Use Even Go Want to do Look More Like?".split()
+
+for i in range(6):
+    print ("{:10}" * 3).format(words.pop(0), words.pop(0), words.pop(0))
+#+END_SRC
+
+
+#+REVEAL: split
+Templating libraries
+
+#+BEGIN_SRC html :session :exports both :results output pp
+<title>{% block title %}{% endblock %}</title>
+<ul>
+{% for user in users %}
+  <li><a href="{{ user.url }}">{{ user.username }}</a></li>
+{% endfor %}
+</ul>
+#+END_SRC
+
+- Jinja2 http://jinja.pocoo.org/docs/
+
+#+REVEAL: split
+Python port of the Common Lisp FORMAT function.
+
+#+BEGIN_SRC python  :exports both :results output pp
+from clformat import clformat
+import time
+
+clformat("There is a ~a in my string.", "foo")
+clformat("~r cat~:p", 10)
+clformat("~{~a~^-~}", range(8))
+clformat("The year is ~@r", time.localtime().tm_year)
+clformat("~#[ none~; ~A~; ~A and ~A~:;~@{~#[~; and~] ~A~^,~}~].",
+         "James", "Simon", "Jason", "Kerry")
+#+END_SRC
+
+- Not for the faint of heart...
+- https://github.com/jkfurtney/clformat
+- Python port of FORTRAN's format statement: https://pypi.python.org/pypi/fortranformat
+
+* Unicode
+
+** Code golf
+
+Produce the number 2014 without any numbers in your source code
+
+#+BEGIN_SRC python :session :exports both :results output pp
+sum(ord(c) for c in 'Happy new year to you!')
+#+END_SRC
+
+- see also =chr()= (or =unichr()=) which is the inverse of =ord()=.
+
+** Unicode
+
+- 110,000 characters and symbols are defined for about 100 written scripts.
+
+- Python 2:
+  - =str= objects represent 8-bit text and binary data
+  - =Unicode= object
+
+- Python 3:
+  - =str= object for Unicode text and 8-bit text
+  - =bytes= type for binary data
+
+#+REVEAL: split
+- Python 2.6+ and 3 have a =bytearray= type (mutable version of
+  bytes)
+
+- Practical Unicode: How do I stop the pain: http://nedbatchelder.com/text/unipain.html
+- http://www.joelonsoftware.com/articles/Unicode.html
+
+** other
+
+- more stuff in the =string= module
+- =json= & =xml= modules
+- =StringIO= module use strings as =file= objects
+- =struct= module for binary IO
+
+#+REVEAL: split
+#+BEGIN_SRC python :session :exports code :results output pp
+"""
+Thank You!
+"""
+#+END_SRC
